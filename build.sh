@@ -1,8 +1,14 @@
 #!/bin/bash
-echo "== Regenerating Ledger File =="
+echo -e "== Regenerating Ledger File ==\n"
 python3 generate_data.py > ledger.example.dat
-echo "== Building reports (ledger) =="
+# count number of transactions
+TXNS=$(grep "^\d" ledger.example.dat | wc -l | awk '{print $1}')
+echo "* Generated $TXNS transactions"
+echo
+
+echo -e "== Building reports (ledger) ==\n"
 ./mk-reports.sh
 echo
-echo "== Building graphs (R) =="
+
+echo -e "== Building graphs (R) ==\n"
 Rscript analyze.r

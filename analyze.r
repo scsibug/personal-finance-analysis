@@ -47,6 +47,7 @@ wr$rate <- ((wr$expenses*12)/wr$assets)
 # Rolling mean to smooth data
 wr <- wr %>% mutate(rate.mean = rollapply(data=rate, width=smooth.months,
                                           align="right", FUN=mean, fill = NA))
+# Generate plot
 years.exp.smooth.plot <- ggplot(wr, aes(x=dt,y=1/rate.mean)) +
   ggtitle("Years of Expenses Saved") + geom_line() +
   geom_hline(aes(yintercept=25), linetype=2) +

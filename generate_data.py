@@ -25,7 +25,7 @@ def annual_to_monthly(rate):
 
 # Starting points for repeating amounts
 salary = 50_000 / 12
-rent = 1_800
+rent = 1_600
 food = 700
 
 savings = 0.0
@@ -37,15 +37,15 @@ min_savings = 10_000
 
 # Inflation and variation
 salary_inflation = annual_to_monthly(0.04)
-salary_variation = 0
+salary_variation = 0.02
 rent_inflation = annual_to_monthly(0.03)
-rent_variation = 0
+rent_variation = 0.02
 food_inflation = annual_to_monthly(0.02)
-food_variation = 0.15
+food_variation = 0.2
 
 # Stock prices
-min_stock_growth = annual_to_monthly(-0.15)
-max_stock_growth = annual_to_monthly(0.3)
+min_stock_growth = annual_to_monthly(-0.25)
+max_stock_growth = annual_to_monthly(0.4)
 stock_price = 10.00
 # each month we record a new price by
 # selecting a growth rate between min/max,
@@ -77,11 +77,15 @@ def gen_transaction(txdate, description, postings):
 curr_month = start_time
 while curr_month < end_time:
     # Update expenses/income based on inflation rates
-    salary = round(salary*salary_inflation,2)
-    food = round(food*food_inflation,2)
-    rent = round(rent*rent_inflation,2)
+    salary = salary*salary_inflation
+    food = food*food_inflation
+    rent = rent*rent_inflation
+    # determine actuals for this month w/ variation
+    salary_act = round(salary * random.uniform(1, 1+salary_variation), 2)
+    food_act = round(food * random.uniform(1, 1+food_variation), 2)
+    rent_act = round(rent * random.uniform(1, 1+rent_variation), 2)
     # Estimate current savings after expenses/income
-    savings += round(salary - food - rent,2)
+    savings += round(salary_act - food_act - rent_act,2)
     # Update stock price
     # select a random value between min/max stock growth
     stock_adjust = random.uniform(min_stock_growth, max_stock_growth)
@@ -90,10 +94,10 @@ while curr_month < end_time:
         stock_adjust = random.uniform(0.5, 1.3)
     stock_price *= stock_adjust
     # Generate a transaction for salary
-    print(gen_transaction(curr_month, "Salary", [(salary_name, "$"+str(-salary)), (savings_name, None)]))
+    print(gen_transaction(curr_month, "Salary", [(salary_name, "$"+str(-salary_act)), (savings_name, None)]))
     # Food and Rent expenses
-    print(gen_transaction(curr_month, "Groceries", [(food_name, "$"+str(food)), (savings_name, None)]))
-    print(gen_transaction(curr_month, "Rent", [(rent_name, "$"+str(rent)), (savings_name, None)]))
+    print(gen_transaction(curr_month, "Groceries", [(food_name, "$"+str(food_act)), (savings_name, None)]))
+    print(gen_transaction(curr_month, "Rent", [(rent_name, "$"+str(rent_act)), (savings_name, None)]))
     # move money to investment if we exceed threshold in savings
     if savings > max_savings:
         delta = round(savings - min_savings)

@@ -1,10 +1,8 @@
-options(warn=-1)
 library(ggplot2)                     # plots
 library(ggthemes)                    # fivethirtyeight theme
 library(scales)                      # $ in plot axis
 library(dplyr, warn.conflicts=FALSE) # left join
 library(zoo, warn.conflicts=FALSE)   # rollapply
-options(warn=0)
 
 # Base directory for all generated graphs
 gdir = "graphs"
@@ -34,12 +32,21 @@ nw.plot <- ggplot(nw.raw, aes(x=dt, y=amount)) +
 ggsave(nw.plot, file=file.path(gdir, "networth.monthly.png"),
        width=gwidth, height=gheight)
 
+# Monthly Expenses
+# Expense data, monthly
+exp.m <- std.parse(file.path(rdir, "expenses.monthly.csv")) %>%
+  rename(expenses = amount) 
+cat("* Plotting Monthly Expenses\n")
+expenses.monthly.plot <- ggplot(exp.m, aes(x=dt,y=expenses)) +
+  ggtitle("Monthly Expenses") + geom_line() +
+  theme_fivethirtyeight(base_size=12, base_family="sans") +
+  scale_y_continuous(labels = scales::dollar_format(), limits = c(0, NA))
+ggsave(expenses.monthly.plot, file=file.path(gdir, "expenses.monthly.png"),
+       width=gwidth, height=gheight)
+
 # Years expenses saved (withdrawal rate calculation)
 # Smooth the graph by averaging over several months of data
 smooth.months = 4
-# Expense data, monthly
-exp.m <- std.parse(file.path(rdir, "expenses.monthly.csv")) %>%
-  rename(expenses = amount)
 # Invested assets, monthly totals
 inv.m <- std.parse(file.path(rdir, "invested.monthly.csv")) %>%
   rename(assets = amount)

@@ -12,7 +12,7 @@ else
   PRICES=""
 fi
 
-# Net worth (assets - liabilities) reported against each month
+# Net worth (assets - liabilities) totals each month
 echo "Report: Net Worth (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Assets Liabilities \
@@ -24,11 +24,11 @@ ledger -f $DAT_FILE reg $DATE_FMT \
 echo "Report: Expenses (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Expenses \
-  --monthly --total-data --collapse --empty \
+  --monthly --amount-data --collapse --empty \
   --no-rounding -X \$ $PRICES \
   > "$REPORTS_DIR/expenses.monthly.csv"
 
-# Invested Assets
+# Invested Assets (totals, monthly)
 echo "Report: Invested Assets (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Assets:Brokerage \

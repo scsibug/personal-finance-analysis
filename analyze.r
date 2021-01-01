@@ -7,8 +7,10 @@ library(zoo, warn.conflicts=FALSE)   # rollapply
 # Base directory for all generated graphs
 gdir = "graphs"
 rdir = "reports-generated"
-gwidth = 10
-gheight = 7
+gwidth = 5
+gheight = 3 
+
+theme <- theme_fivethirtyeight(base_size=8, base_family="sans")
 
 # Create graph directory if it does not exist
 dir.create(file.path(gdir), showWarnings = FALSE)
@@ -26,8 +28,7 @@ std.parse <- function(filename) {
 cat("* Plotting Net Worth\n")
 nw.raw <- std.parse(file.path(rdir, "networth.monthly.csv"))
 nw.plot <- ggplot(nw.raw, aes(x=dt, y=amount)) +
-  ggtitle("Net Worth") + geom_line() +
-  theme_fivethirtyeight(base_size=12, base_family="sans") +
+  ggtitle("Net Worth") + geom_line() + theme +
   scale_y_continuous(labels = scales::dollar_format(), limits = c(0, NA))
 ggsave(nw.plot, file=file.path(gdir, "networth.monthly.png"),
        width=gwidth, height=gheight)
@@ -38,8 +39,7 @@ exp.m <- std.parse(file.path(rdir, "expenses.monthly.csv")) %>%
   rename(expenses = amount) 
 cat("* Plotting Monthly Expenses\n")
 expenses.monthly.plot <- ggplot(exp.m, aes(x=dt,y=expenses)) +
-  ggtitle("Monthly Expenses") + geom_line() +
-  theme_fivethirtyeight(base_size=12, base_family="sans") +
+  ggtitle("Monthly Expenses") + geom_line() + theme +
   scale_y_continuous(labels = scales::dollar_format(), limits = c(0, NA))
 ggsave(expenses.monthly.plot, file=file.path(gdir, "expenses.monthly.png"),
        width=gwidth, height=gheight)
@@ -60,9 +60,8 @@ wr <- wr %>% mutate(rate.mean = rollapply(data=rate, width=smooth.months,
 # Generate plot
 cat("* Plotting Years of Saved Expenses\n")
 years.exp.smooth.plot <- ggplot(wr, aes(x=dt,y=1/rate.mean)) +
-  ggtitle("Years of Expenses Saved") + geom_line(na.rm=TRUE) +
+  ggtitle("Years of Expenses Saved") + geom_line(na.rm=TRUE) + theme +
   geom_hline(aes(yintercept=25), linetype=2) +
-  theme_fivethirtyeight(base_size=12, base_family="sans") +
   scale_y_continuous(limits = c(0, NA))
 ggsave(years.exp.smooth.plot, file=file.path(gdir, "years.expenses.png"),
   width=gwidth, height=gheight)

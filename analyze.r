@@ -1,8 +1,10 @@
-library(ggplot2)  # plots
-library(ggthemes) # fivethirtyeight theme
-library(scales)   # $ in plot axis
-library(dplyr)    # left join
-library(zoo)      # rollapply
+options(warn=-1)
+library(ggplot2)                     # plots
+library(ggthemes)                    # fivethirtyeight theme
+library(scales)                      # $ in plot axis
+library(dplyr, warn.conflicts=FALSE) # left join
+library(zoo, warn.conflicts=FALSE)   # rollapply
+options(warn=0)
 
 # Base directory for all generated graphs
 gdir = "graphs"
@@ -23,6 +25,7 @@ std.parse <- function(filename) {
 }
 
 # Net Worth Plot
+cat("* Plotting Net Worth\n")
 nw.raw <- std.parse(file.path(rdir, "networth.monthly.csv"))
 nw.plot <- ggplot(nw.raw, aes(x=dt, y=amount)) +
   ggtitle("Net Worth") + geom_line() +
@@ -41,17 +44,18 @@ exp.m <- std.parse(file.path(rdir, "expenses.monthly.csv")) %>%
 inv.m <- std.parse(file.path(rdir, "invested.monthly.csv")) %>%
   rename(assets = amount)
 # Join datasets by their common 'dt' attribute
-wr <- inv.m %>% left_join(exp.m)
+wr <- inv.m %>% left_join(exp.m, by=c("dt"))
 # Calculate the rate (annualized expenses / invested asssets)
 wr$rate <- ((wr$expenses*12)/wr$assets)
 # Rolling mean to smooth data
 wr <- wr %>% mutate(rate.mean = rollapply(data=rate, width=smooth.months,
                                           align="right", FUN=mean, fill = NA))
 # Generate plot
+cat("* Plotting Years of Saved Expenses\n")
 years.exp.smooth.plot <- ggplot(wr, aes(x=dt,y=1/rate.mean)) +
-  ggtitle("Years of Expenses Saved") + geom_line() +
+  ggtitle("Years of Expenses Saved") + geom_line(na.rm=TRUE) +
   geom_hline(aes(yintercept=25), linetype=2) +
   theme_fivethirtyeight(base_size=12, base_family="sans") +
   scale_y_continuous(limits = c(0, NA))
-ggsave(years.exp.smooth.plot, file=file.path(gdir, "years.expenses2.png"),
+ggsave(years.exp.smooth.plot, file=file.path(gdir, "years.expenses.png"),
   width=gwidth, height=gheight)

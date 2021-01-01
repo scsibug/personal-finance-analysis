@@ -13,7 +13,7 @@ else
 fi
 
 # Net worth (assets - liabilities) totals each month
-echo "Report: Net Worth (monthly)"
+echo "* Report: Net Worth (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Assets Liabilities \
   --monthly --total-data --collapse --empty \
@@ -21,7 +21,7 @@ ledger -f $DAT_FILE reg $DATE_FMT \
   > "$REPORTS_DIR/networth.monthly.csv"
 
 # Expenses
-echo "Report: Expenses (monthly)"
+echo "* Report: Expenses (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Expenses \
   --monthly --amount-data --collapse --empty \
@@ -29,7 +29,7 @@ ledger -f $DAT_FILE reg $DATE_FMT \
   > "$REPORTS_DIR/expenses.monthly.csv"
 
 # Invested Assets (totals, monthly)
-echo "Report: Invested Assets (monthly)"
+echo "* Report: Invested Assets (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Assets:Brokerage \
   --monthly --total-data --collapse --empty \

@@ -16,6 +16,22 @@ fi
 echo "Report: Net Worth (monthly)"
 ledger -f $DAT_FILE reg $DATE_FMT \
   Assets Liabilities \
-  --monthly --total-data --collapse \
+  --monthly --total-data --collapse --empty \
   --no-rounding -X \$ $PRICES \
   > "$REPORTS_DIR/networth.monthly.csv"
+
+# Expenses
+echo "Report: Expenses (monthly)"
+ledger -f $DAT_FILE reg $DATE_FMT \
+  Expenses \
+  --monthly --total-data --collapse --empty \
+  --no-rounding -X \$ $PRICES \
+  > "$REPORTS_DIR/expenses.monthly.csv"
+
+# Invested Assets
+echo "Report: Invested Assets (monthly)"
+ledger -f $DAT_FILE reg $DATE_FMT \
+  Assets:Brokerage \
+  --monthly --total-data --collapse --empty \
+  --no-rounding -X \$ $PRICES \
+  > "$REPORTS_DIR/invested.monthly.csv"

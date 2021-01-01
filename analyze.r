@@ -7,8 +7,8 @@ library(zoo, warn.conflicts=FALSE)   # rollapply
 # Base directory for all generated graphs
 gdir = "graphs"
 rdir = "reports-generated"
-gwidth = 5
-gheight = 3 
+gwidth = 7
+gheight = 5 
 
 theme <- theme_fivethirtyeight(base_size=8, base_family="sans")
 

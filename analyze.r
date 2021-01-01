@@ -1,8 +1,8 @@
-library(ggplot2)
-library(ggthemes)
-library(scales)
-library(dplyr) # left join
-library(zoo) # rollapply
+library(ggplot2)  # plots
+library(ggthemes) # fivethirtyeight theme
+library(scales)   # $ in plot axis
+library(dplyr)    # left join
+library(zoo)      # rollapply
 
 # Base directory for all generated graphs
 gdir = "graphs"

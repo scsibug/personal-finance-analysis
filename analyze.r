@@ -32,17 +32,19 @@ ggsave(nw.plot, file=file.path(gdir, "networth.monthly.png"),
        width=gwidth, height=gheight)
 
 # Years expenses saved (withdrawal rate calculation)
+# Smooth the graph by averaging over several months of data
+smooth.months = 4
+# Expense data, monthly
 exp.m <- std.parse(file.path(rdir, "expenses.monthly.csv")) %>%
   rename(expenses = amount)
-# Invested assets
+# Invested assets, monthly totals
 inv.m <- std.parse(file.path(rdir, "invested.monthly.csv")) %>%
   rename(assets = amount)
 # Join datasets by their common 'dt' attribute
 wr <- inv.m %>% left_join(exp.m)
 # Calculate the rate (annualized expenses / invested asssets)
 wr$rate <- ((wr$expenses*12)/wr$assets)
-# Smooth over 4 months
-smooth.months = 4
+# Rolling mean to smooth data
 wr <- wr %>% mutate(rate.mean = rollapply(data=rate, width=smooth.months,
                                           align="right", FUN=mean, fill = NA))
 years.exp.smooth.plot <- ggplot(wr, aes(x=dt,y=1/rate.mean)) +

@@ -14,24 +14,21 @@ fi
 
 # Net worth (assets - liabilities) totals each month
 echo "* Report: Net Worth (monthly)"
-ledger -f $DAT_FILE reg $DATE_FMT \
-  Assets Liabilities \
+ledger -f $DAT_FILE reg Assets Liabilities \
+  $DATE_FMT -X \$ $PRICES \
   --monthly --total-data --collapse --empty \
-  -X \$ $PRICES \
   > "$REPORTS_DIR/networth.monthly.csv"
 
 # Expenses
 echo "* Report: Expenses (monthly)"
-ledger -f $DAT_FILE reg $DATE_FMT \
-  Expenses \
+ledger -f $DAT_FILE reg Expenses \
+  $DATE_FMT -X \$ $PRICES \
   --monthly --amount-data --collapse --empty \
-  -X \$ $PRICES \
   > "$REPORTS_DIR/expenses.monthly.csv"
 
 # Invested Assets (totals, monthly)
 echo "* Report: Invested Assets (monthly)"
-ledger -f $DAT_FILE reg $DATE_FMT \
-  Assets:Brokerage \
+ledger -f $DAT_FILE reg Assets:Brokerage \
+  $DATE_FMT -X \$ $PRICES \
   --monthly --total-data --collapse --empty \
-  -X \$ $PRICES \
   > "$REPORTS_DIR/invested.monthly.csv"

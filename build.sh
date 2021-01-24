@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "== Regenerating Ledger File ==\n"
+echo -e "== Generating Ledger File ==\n"
 python3 generate_data.py > ledger.example.dat
 # count number of transactions
 TXNS=$(grep "^\d" ledger.example.dat | wc -l | awk '{print $1}')
